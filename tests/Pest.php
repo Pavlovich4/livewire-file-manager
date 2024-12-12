@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
+
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -38,7 +41,7 @@ function createTestFolder($name = 'Test Folder', $parentId = null)
 {
     return \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => $name,
-        'path' => \Str::slug($name),
+        'path' => Str::slug($name),
         'parent_id' => $parentId
     ]);
 }
