@@ -37,8 +37,9 @@
                             wire:model.defer="newFolderName"
                             wire:keydown.enter="renameFolder({{ $folder->id }})"
                             wire:blur="stopEditing"
-                            class="flex-1 px-2 py-1 text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                            class="flex-1 px-2 py-1 text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                             @click.stop
+                            @click.outside="$wire.stopEditing()"
                         >
                     @else
                         <span
