@@ -1,7 +1,7 @@
 <?php
 
 use Pavlovich4\LivewireFilemanager\Tests\TestCase;
-use Pavlovich4\LivewireFilemanager\Components\FileManager;
+use Pavlovich4\LivewireFilemanager\Livewire\FileManager;
 use Livewire\Livewire;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +11,7 @@ uses(TestCase::class);
 test('can mount file manager component', function () {
     Livewire::test(FileManager::class)
         ->assertOk()
-        ->assertViewIs('livewire-filemanager::components.file-manager');
+        ->assertViewIs('livewire-filemanager::livewire.file-manager');
 });
 
 test('can upload file', function () {

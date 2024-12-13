@@ -1,10 +1,9 @@
 <?php
 
-namespace Pavlovich4\LivewireFilemanager\Components;
+namespace Pavlovich4\LivewireFilemanager\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Storage;
 use Pavlovich4\LivewireFilemanager\Actions\UploadFileAction;
 use Pavlovich4\LivewireFilemanager\Actions\CreateFolderAction;
@@ -151,7 +150,7 @@ class FileManager extends Component
             $this->loadFiles();
         }
 
-        return view('livewire-filemanager::components.file-manager', [
+        return view('livewire-filemanager::livewire.file-manager', [
             'rootFolders' => Folder::whereNull('parent_id')
                 ->orderBy('order')
                 ->with('children')
