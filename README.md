@@ -13,12 +13,12 @@ A modern, responsive file manager for Laravel using Livewire and Alpine.js. Feat
 - Copy sharing links
 - File downloads
 
-## Requirements
+## Important Requirements
 
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Laravel 10.0 or higher
 - Livewire 3.0 or higher
-- spatie/laravel-medialibrary 11.0 or higher
+- spatie/laravel-medialibrary 10.0 or higher
 
 ## Installation
 
@@ -28,36 +28,20 @@ A modern, responsive file manager for Laravel using Livewire and Alpine.js. Feat
 composer require pavlovich4/livewire-filemanager
 ```
 
-2. Add the Livewire directives to your layout file:
-
-```blade
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- ... -->
-    @livewireStyles
-</head>
-<body>
-    <!-- ... -->
-    @livewireScripts
-</body>
-</html>
-```
-
-3. Publish and run the migrations:
+2. Publish and run the migrations:
 
 ```bash
 php artisan vendor:publish --tag="livewire-filemanager-migrations"
 php artisan migrate
 ```
 
-4. Publish the config file:
+3. Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="livewire-filemanager-config"
 ```
 
-5. Publish and configure the media library:
+4. Publish and configure the media library:
 
 ```bash
 php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
@@ -80,7 +64,7 @@ Update `config/media-library.php`:
 ],
 ```
 
-6. Create the symbolic link for public storage:
+5. Create the symbolic link for public storage:
 
 ```bash
 php artisan storage:link
