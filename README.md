@@ -21,7 +21,7 @@ A modern, responsive file manager for Laravel using Livewire and Alpine.js. Feat
 - Livewire 3.0 or higher
 - spatie/laravel-medialibrary 10.0 or higher
 
-> **Warning**
+> [!IMPORTANT]
 > Please be sure to install, configure and run migrations of spatie/laravel-medialibrary package before continue. You can review the installation steps at [spatie/laravel-medialibrary documentation](https://spatie.be/docs/laravel-medialibrary/v11/installation-setup).
 
 
@@ -68,7 +68,7 @@ Update `config/media-library.php`:
 php artisan storage:link
 ```
 
-> **Info**
+> [!NOTE]
 > This package requires Tailwind CSS along with the @tailwindcss/aspect-ratio and @tailwindcss/forms plugins to be installed and configured in your project.
 
 6. Update your Tailwind CSS configuration in `tailwind.config.js`:
