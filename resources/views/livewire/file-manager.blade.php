@@ -1,3 +1,5 @@
+
+
 <div
     x-data="{
         showModal: @entangle('showModal'),
@@ -7,7 +9,7 @@
         isGrid: @entangle('isGrid'),
     }"
     @keydown.escape.window="showModal = false"
-    class="relative"
+    class="relative dark-theme dark-mode-transition"
     @open-filemanager.window="showModal = true"
 >
 
@@ -16,26 +18,17 @@
     <div
         x-show="showModal"
         x-cloak
-        class="fixed inset-0 z-40 overflow-y-auto"
-        x-transition
+        class="fixed inset-0 z-40 overflow-y-auto bg-opacity-75 bg-gray-400"
     >
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div
-                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                @click="showModal = false"
-            ></div>
-
-            <div
-                class="relative bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[80vh] overflow-hidden"
-            >
+            <div class="relative bg-[var(--bg-primary)] rounded-xl shadow-2xl w-full max-w-6xl max-h-[80vh] overflow-hidden border border-[var(--border-color)]">
                 {{-- Modal Header --}}
-                <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900">File Manager</h3>
+                <div class="px-6 py-4 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--bg-secondary)]">
+                    <h3 class="text-lg font-medium text-[var(--text-primary)]">File Manager</h3>
                     <button
                         @click="showModal = false"
-                        class="text-gray-400 hover:text-gray-500"
+                        class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors shadow-inner hover:shadow-gray-900 rounded-full p-1"
                     >
-                        <span class="sr-only">Close</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -94,17 +87,17 @@
                                 <div class="flex items-center space-x-4">
                                     <button
                                         wire:click="$set('showNewFolderModal', true)"
-                                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                        class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors duration-200 ease-in-out shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),inset_0_-1px_1px_rgba(0,0,0,0.1)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(0,0,0,0.15)]"
                                     >
-                                        <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                         </svg>
                                         New Folder
                                     </button>
 
                                     <button
                                         wire:click="toggleView"
-                                        class="p-2 text-gray-400 hover:text-gray-500"
+                                        class="p-2 text-gray-400 hover:text-gray-500 rounded-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),inset_0_-1px_1px_rgba(0,0,0,0.05)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(0,0,0,0.1)] bg-white transition-all duration-200"
                                     >
                                         <template x-if="isGrid">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,8 +123,8 @@
                                 @dragover.prevent="dragOver = true"
                                 @dragleave.prevent="dragOver = false"
                                 @drop.prevent="dragOver = false; $wire.handleFileUpload($event.dataTransfer.files)"
-                                :class="{ 'border-indigo-500 bg-indigo-50': dragOver }"
-                                class="border-2 border-dashed rounded-lg p-6 text-center mb-6 transition-colors duration-200"
+                                :class="{ 'border-[var(--accent-color)] bg-opacity-10 bg-[var(--accent-color)]': dragOver }"
+                                class="border-2 border-dashed border-[var(--border-color)] rounded-lg p-6 text-center mb-6 transition-colors duration-200 hover:border-[var(--accent-color)]"
                             >
                                 <input
                                     type="file"
@@ -309,7 +302,7 @@
                         <div class="flex space-x-3 pt-4">
                             <button
                                 wire:click="downloadFile({{ $selectedFile->id }})"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                                class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-inner"
                             >
                                 <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -319,7 +312,7 @@
 
                             <button
                                 wire:click="deleteFile({{ $selectedFile->id }})"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 shadow-inner"
                             >
                                 <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -365,7 +358,7 @@
                             <input
                                 type="text"
                                 wire:model="newFolderName"
-                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md text-gray-900"
                                 placeholder="Folder name"
                                 @keydown.enter="$wire.createFolder()"
                             >
@@ -375,13 +368,13 @@
                 <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                     <button
                         wire:click="createFolder"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-inner px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                     >
                         Create
                     </button>
                     <button
                         @click="showNewFolderModal = false"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-inner px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
                     >
                         Cancel
                     </button>

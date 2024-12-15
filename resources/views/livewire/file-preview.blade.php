@@ -1,23 +1,22 @@
 <div>
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
+    <div class="bg-[var(--bg-primary)] rounded-lg overflow-hidden border border-[var(--border-color)]">
+        <div class="px-6 py-4 bg-[var(--bg-secondary)]">
             <div class="flex justify-between items-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                <h3 class="text-lg font-medium text-[var(--text-primary)]">
                     {{ $file->name }}
                 </h3>
-                <div class="flex space-x-3">
+                <div class="flex space-x-3"></div>
                     <button
-                        wire:click="$set('showShareModal', true)"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        class="inline-flex items-center px-4 py-2 rounded-md bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white font-medium text-sm transition-colors duration-200"
                     >
-                        <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                         </svg>
                         Share
                     </button>
                     <button
                         wire:click="$emit('downloadFile', {{ $file->id }})"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-inner"
                     >
                         <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -104,7 +103,7 @@
                                     type="text"
                                     readonly
                                     value="{{ $shareLink }}"
-                                    class="flex-1 min-w-0 block w-full px-3 py-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                                    class="flex-1 min-w-0 block w-full px-3 py-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 text-gray-900"
                                 >
                                 <button
                                     type="button"

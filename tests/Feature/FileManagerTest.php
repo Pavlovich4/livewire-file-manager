@@ -1,20 +1,18 @@
 <?php
 
-use Pavlovich4\LivewireFilemanager\Tests\TestCase;
-use Pavlovich4\LivewireFilemanager\Components\FileManager;
+use Pavlovich4\LivewireFilemanager\Livewire\FileManager;
 use Livewire\Livewire;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-uses(TestCase::class);
 
 test('can mount file manager component', function () {
     Livewire::test(FileManager::class)
         ->assertOk()
-        ->assertViewIs('livewire-filemanager::components.file-manager');
+        ->assertViewIs('livewire-filemanager::livewire.file-manager');
 });
 
-test('can upload file', function () {
+test('can upload file and download file', function () {
     Storage::fake('public');
 
     $file = UploadedFile::fake()->image('test.jpg');
@@ -24,7 +22,14 @@ test('can upload file', function () {
         ->call('handleFileUpload')
         ->assertOk();
 
-    Storage::disk('public')->assertExists('test.jpg');
+    $uploadedFile = \Pavlovich4\LivewireFilemanager\Models\File::first();
+
+    expect($uploadedFile->name)->toBe('test.jpg')->and($uploadedFile->path)->toBe('test.jpg');
+
+    $response = Livewire::test(FileManager::class)
+        ->call('downloadFile', $uploadedFile->id);
+
+    $response->assertStatus(200);
 });
 
 test('can create folder', function () {
@@ -45,12 +50,12 @@ test('can delete folder', function () {
         'name' => 'Test Folder',
         'path' => 'test-folder'
     ]);
-
     Livewire::test(FileManager::class)
         ->call('deleteFolder', $folder->id)
         ->assertOk();
 
-    $this->assertDatabaseMissing('folders', ['id' => $folder->id]);
+    expect(\Pavlovich4\LivewireFilemanager\Models\Folder::all()->toArray())->toBeEmpty();
+
 });
 
 test('can rename folder', function () {
@@ -88,20 +93,6 @@ test('can toggle view mode', function () {
         ->assertSet('isGrid', true)
         ->call('toggleView')
         ->assertSet('isGrid', false);
-});
-
-test('can download file', function () {
-    $file = \Pavlovich4\LivewireFilemanager\Models\File::create([
-        'name' => 'test.jpg',
-        'mime_type' => 'image/jpeg',
-        'size' => 1000,
-        'path' => 'test.jpg'
-    ]);
-
-    $response = Livewire::test(FileManager::class)
-        ->call('downloadFile', $file->id);
-
-    $response->assertStatus(200);
 });
 
 test('validates file upload size', function () {

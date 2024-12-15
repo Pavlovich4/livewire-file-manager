@@ -2,11 +2,12 @@
 
 namespace Pavlovich4\LivewireFilemanager\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Pavlovich4\LivewireFilemanager\Support\CustomPathGenerator;
 
 class File extends Model implements HasMedia
@@ -38,12 +39,12 @@ class File extends Model implements HasMedia
         });
     }
 
-    public function folder()
+    public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
     }
 
-    public function getThumbnailUrlAttribute()
+    public function getThumbnailUrlAttribute(): string
     {
         return $this->getFirstMediaUrl('default', 'thumb');
     }

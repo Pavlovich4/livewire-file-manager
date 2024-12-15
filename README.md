@@ -5,6 +5,7 @@
 ![GitHub Actions](https://github.com/pavlovich4/livewire-filemanager/actions/workflows/main.yml/badge.svg)
 
 A modern, responsive file manager for Laravel using Livewire and Alpine.js. Features include:
+
 - Drag and drop file uploads
 - Folder management
 - Grid and list views
@@ -13,12 +14,16 @@ A modern, responsive file manager for Laravel using Livewire and Alpine.js. Feat
 - Copy sharing links
 - File downloads
 
-## Requirements
+## Important Requirements
 
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Laravel 10.0 or higher
 - Livewire 3.0 or higher
-- spatie/laravel-medialibrary 11.0 or higher
+- spatie/laravel-medialibrary 10.0 or higher
+
+> [!CAUTION]
+> **Please be sure to install, configure and run migrations of spatie/laravel-medialibrary package before continue. You can review the installation steps at [spatie/laravel-medialibrary documentation](https://spatie.be/docs/laravel-medialibrary/v11/installation-setup).**
+
 
 ## Installation
 
@@ -28,62 +33,61 @@ A modern, responsive file manager for Laravel using Livewire and Alpine.js. Feat
 composer require pavlovich4/livewire-filemanager
 ```
 
-2. Add the Livewire directives to your layout file:
-
-```blade
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- ... -->
-    @livewireStyles
-</head>
-<body>
-    <!-- ... -->
-    @livewireScripts
-</body>
-</html>
-```
-
-3. Publish and run the migrations:
+2. Publish and run the migrations:
 
 ```bash
 php artisan vendor:publish --tag="livewire-filemanager-migrations"
 php artisan migrate
 ```
 
-4. Publish the config file:
+3. Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="livewire-filemanager-config"
 ```
 
-5. Publish and configure the media library:
+4. Publish and configure the media library:
 
 ```bash
-php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-config"
 ```
 
 Update `config/media-library.php`:
+
 ```php
-'path_generator' => Pavlovich4\LivewireFilemanager\Support\CustomPathGenerator::class,
-
-// Configure the disk (if you want to use a different one than public)
-'disk_name' => 'public',
-
-// Configure the conversions
-'image_optimizers' => [
-    Spatie\ImageOptimizer\Optimizers\Jpegoptim::class => [
-        '-m85', // set maximum quality to 85%
-        '--strip-all', // this strips out all text information such as comments and EXIF data
-        '--all-progressive', // this will make sure the resulting image is a progressive one
+ 'custom_path_generators' => [
+        \Pavlovich4\LivewireFilemanager\Models\File::class => \Pavlovich4\LivewireFilemanager\Support\CustomPathGenerator::class,
+        // or
+        // 'model_morph_alias' => PathGenerator::class
     ],
-],
 ```
 
-6. Create the symbolic link for public storage:
+5. Create the symbolic link for public storage:
 
 ```bash
 php artisan storage:link
+```
+
+> [!IMPORTANT]
+> This package requires Tailwind CSS along with the @tailwindcss/aspect-ratio and @tailwindcss/forms plugins to be installed and configured in your project.
+
+6. Update your Tailwind CSS configuration in `tailwind.config.js`:
+
+
+```js
+module.exports = {
+    // ...
+    content: [
+        // ...
+        './vendor/pavlovich4/livewire-filemanager/resources/views/**/*.blade.php',
+    ],
+    // ...
+    plugins: [
+        // ...
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/aspect-ratio'),
+    ],
+};
 ```
 
 ## Usage
@@ -91,41 +95,28 @@ php artisan storage:link
 1. Add the file manager component to your layout:
 
 ```blade
-{{-- Using the component --}}
-<x-filemanager />
 
-{{-- Or using the Livewire directive --}}
+<livewire:file-manager />
+{{-- Or --}}
 @livewire('file-manager')
 ```
-
-2. Include the scripts component at the end of your body:
+2. Include the style blade directive in the head tag of your layout:
 
 ```blade
-<x-filemanager-scripts />
+@livewireFileManagerStyle
 ```
 
-3. Trigger the file manager from any element using the `data-trigger="filemanager"` attribute:
+3. Include the scripts directive at the end of your body:
+
+```blade
+@livewireFileManagerScript
+```
+
+4. Trigger the file manager from any element using the `data-trigger="filemanager"` attribute:
 
 ```html
 <!-- Basic trigger -->
-<button data-trigger="filemanager">
-    Open File Manager
-</button>
-
-<!-- With callback function -->
-<button
-    data-trigger="filemanager"
-    data-callback="handleFileSelected"
->
-    Select File
-</button>
-
-<script>
-function handleFileSelected(file) {
-    console.log('Selected file:', file);
-    // Handle the selected file
-}
-</script>
+<button data-trigger="filemanager">Open File Manager</button>
 ```
 
 ## Configuration
@@ -140,31 +131,14 @@ return [
     // Media library configuration
     'media' => [
         'path_generator' => Pavlovich4\LivewireFilemanager\Support\CustomPathGenerator::class,
-
-        // Maximum upload size in MB (default: 100)
-        'max_file_size' => 100,
-
-        // Allowed file types (empty array means all types)
-        'allowed_mimes' => [
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'application/pdf',
-            // etc...
-        ],
-
-        // Thumbnail sizes
-        'thumb_sizes' => [
-            'width' => 200,
-            'height' => 200,
-        ],
     ],
 ];
 ```
 
-## Features
+## Key Features
 
 ### File Upload
+
 - Drag and drop support
 - Multiple file upload
 - Progress indicator
@@ -172,6 +146,7 @@ return [
 - Size limits (configurable)
 
 ### Folder Management
+
 - Create folders
 - Delete folders (with confirmation)
 - Rename folders
@@ -179,6 +154,7 @@ return [
 - Folder navigation
 
 ### File Operations
+
 - Preview files
 - Download files
 - Delete files
@@ -187,18 +163,13 @@ return [
 - File icons based on type
 
 ### UI Features
+
 - Grid/List view toggle
 - Breadcrumb navigation
 - Responsive design
 - Loading states
 - Error handling
 
-## Events
-
-The package emits the following events:
-
-- `filemanager:selected` - When a file is selected (includes file data)
-- `open-filemanager` - To open the file manager modal
 
 ## Contributing
 

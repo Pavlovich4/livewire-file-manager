@@ -2,9 +2,12 @@
 
 namespace Pavlovich4\LivewireFilemanager\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Folder extends Model
 {
@@ -31,28 +34,33 @@ class Folder extends Model
             }
 
             // Delete all files first to ensure media is properly cleaned up
-            $folder->allFiles()->each(function ($file) {
-                $file->delete();
-            });
+            if ($folder->files) {
+                $folder->files->each(function ($file) {
+                    $file->delete();
+                });
+            }
+
 
             // Then delete all child folders recursively
-            $folder->children->each(function ($childFolder) {
-                $childFolder->delete();
-            });
+            if ($folder->children) {
+                $folder->children->each(function ($childFolder) {
+                    $childFolder->delete();
+                });
+            }
         });
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Folder::class, 'parent_id');
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(Folder::class, 'parent_id')->orderBy('order');
     }
 
-    public function files()
+    public function files(): HasMany
     {
         return $this->hasMany(File::class);
     }
@@ -66,14 +74,14 @@ class Folder extends Model
         return $path;
     }
 
-    public function allFiles()
+    public function allFiles(): HasMany
     {
         return $this->files()->union(
             File::whereIn('folder_id', $this->allChildren()->pluck('id'))
         );
     }
 
-    public function allChildren()
+    public function allChildren(): Collection
     {
         return $this->children()->with('children')->get()->flatMap(function ($child) {
             return collect([$child])->merge($child->allChildren());

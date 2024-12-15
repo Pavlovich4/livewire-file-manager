@@ -1,6 +1,6 @@
 <?php
 
-namespace Pavlovich4\LivewireFilemanager\Components;
+namespace Pavlovich4\LivewireFilemanager\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -34,6 +34,6 @@ class FileDropzone extends Component
 
     public function render()
     {
-        return view('livewire-filemanager::components.file-dropzone');
+        return view('livewire-filemanager::livewire.file-dropzone');
     }
 }
