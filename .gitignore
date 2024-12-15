@@ -1,0 +1,8 @@
+.env
+.env.example
+.DS_Store
+.idea
+.vscode
+/storage
+/public/storage
+/vendor
