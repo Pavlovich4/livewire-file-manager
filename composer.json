@@ -23,7 +23,7 @@
     "spatie/laravel-package-tools": "^1.14"
   },
   "require-dev": {
-    "orchestra/testbench": "^8.0",
+    "orchestra/testbench": "^9.0",
     "phpunit/phpunit": "^11.0",
     "pestphp/pest": "^3.0"
   },
