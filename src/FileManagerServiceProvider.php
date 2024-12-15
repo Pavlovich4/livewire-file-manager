@@ -27,11 +27,6 @@ class FileManagerServiceProvider extends ServiceProvider
         // Merge config
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'livewire-filemanager');
 
-        // Register the main class to use with the facade
-        $this->app->singleton('livewire-filemanager', function () {
-            return new LivewireFilemanager;
-        });
-
         // Bind the custom path generator
         // $this->app->bind(PathGenerator::class, CustomPathGenerator::class);
     }

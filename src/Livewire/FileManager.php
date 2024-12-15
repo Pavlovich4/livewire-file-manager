@@ -196,7 +196,7 @@ class FileManager extends Component
         $this->loadFiles();
     }
 
-    public function deleteFolder($folderId)
+    public function deleteFolder($folderId): void
     {
         try {
             $folder = Folder::findOrFail($folderId);
@@ -216,11 +216,13 @@ class FileManager extends Component
 
             $folder->delete();
         } catch (\Exception $e) {
+            dd($e->getMessage());
+            \Log::error('Error deleting folder: ' . $e->getMessage());
         }
         $this->loadFiles();
     }
 
-    public function confirmDelete()
+    public function confirmDelete(): void
     {
         try {
             $folder = Folder::findOrFail($this->folderToDelete['id']);
