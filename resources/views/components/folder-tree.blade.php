@@ -15,7 +15,7 @@
                     </svg>
                 </button>
 
-                <div class="flex-1 flex items-center">
+                <div class="flex-1 flex items-center cursor-pointer" wire:click="navigateToFolder({{ $folder->id }})">
                     <svg
                         class="w-5 h-5 text-gray-400 mr-2 transition-transform"
                         fill="none"
@@ -45,7 +45,6 @@
                         <span
                             class="flex-1 text-sm text-gray-700 cursor-pointer"
                             @dblclick.stop="$wire.startEditing({{ $folder->id }}, 'folder')"
-                            wire:click="navigateToFolder({{ $folder->id }})"
                         >
                             {{ $folder->name }}
                         </span>

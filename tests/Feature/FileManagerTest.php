@@ -136,3 +136,21 @@ test('can handle file preview', function () {
         ->assertSet('selectedFile.id', $file->id)
         ->assertSet('showFilePreview', true);
 });
+
+test('it shows confirmation before deleting file', function () {
+    $file = File::factory()->create();
+
+    Livewire::test(FileManager::class)
+        ->call('deleteFile', $file->id)
+        ->assertSet('showFileDeleteConfirmation', true)
+        ->assertSet('fileToDelete.id', $file->id)
+        ->call('cancelFileDelete')
+        ->assertSet('showFileDeleteConfirmation', false)
+        ->assertSet('fileToDelete', null)
+        ->call('deleteFile', $file->id)
+        ->call('confirmFileDelete')
+        ->assertSet('showFileDeleteConfirmation', false)
+        ->assertSet('fileToDelete', null);
+
+    $this->assertDatabaseMissing('files', ['id' => $file->id]);
+});
