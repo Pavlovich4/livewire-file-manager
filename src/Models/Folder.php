@@ -34,14 +34,19 @@ class Folder extends Model
             }
 
             // Delete all files first to ensure media is properly cleaned up
-            $folder->allFiles()->each(function ($file) {
-                $file->delete();
-            });
+            if ($folder->files) {
+                $folder->files->each(function ($file) {
+                    $file->delete();
+                });
+            }
+
 
             // Then delete all child folders recursively
-            $folder->children->each(function ($childFolder) {
-                $childFolder->delete();
-            });
+            if ($folder->children) {
+                $folder->children->each(function ($childFolder) {
+                    $childFolder->delete();
+                });
+            }
         });
     }
 
@@ -69,7 +74,7 @@ class Folder extends Model
         return $path;
     }
 
-    public function allFiles(): Collection
+    public function allFiles(): HasMany
     {
         return $this->files()->union(
             File::whereIn('folder_id', $this->allChildren()->pluck('id'))
