@@ -31,6 +31,8 @@ class FileManager extends Component
     public $showFilePreview = false;
     public $showDeleteConfirmation = false;
     public $folderToDelete = null;
+    public $showFileDeleteConfirmation = false;
+    public $fileToDelete = null;
 
     protected $listeners = [
         'fileUpload' => 'handleFileUpload',
@@ -186,14 +188,8 @@ class FileManager extends Component
 
     public function deleteFile($fileId)
     {
-        try {
-            $file = File::findOrFail($fileId);
-            $file->delete();
-            $this->closePreview();
-        } catch (\Exception $e) {
-            \Log::error('Error deleting file: ' . $e->getMessage());
-        }
-        $this->loadFiles();
+        $this->fileToDelete = File::find($fileId);
+        $this->showFileDeleteConfirmation = true;
     }
 
     public function deleteFolder($folderId): void
@@ -343,5 +339,25 @@ class FileManager extends Component
         }
 
         return 'file';
+    }
+
+    public function confirmFileDelete()
+    {
+        if ($this->fileToDelete) {
+            $this->fileToDelete->delete();
+            $this->showFileDeleteConfirmation = false;
+            $this->fileToDelete = null;
+            $this->showFilePreview = false;
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => 'File deleted successfully'
+            ]);
+        }
+    }
+
+    public function cancelFileDelete()
+    {
+        $this->showFileDeleteConfirmation = false;
+        $this->fileToDelete = null;
     }
 }
