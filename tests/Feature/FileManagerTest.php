@@ -1,10 +1,9 @@
 <?php
 
-use Pavlovich4\LivewireFilemanager\Livewire\FileManager;
-use Livewire\Livewire;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-
+use Livewire\Livewire;
+use Pavlovich4\LivewireFilemanager\Livewire\FileManager;
 
 test('can mount file manager component', function () {
     Livewire::test(FileManager::class)
@@ -40,7 +39,7 @@ test('can create folder', function () {
 
     $this->assertDatabaseHas('folders', [
         'name' => 'Test Folder',
-        'parent_id' => null
+        'parent_id' => null,
     ]);
 });
 
@@ -48,7 +47,7 @@ test('can delete folder', function () {
     // Create a folder first
     $folder = \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => 'Test Folder',
-        'path' => 'test-folder'
+        'path' => 'test-folder',
     ]);
     Livewire::test(FileManager::class)
         ->call('deleteFolder', $folder->id)
@@ -61,7 +60,7 @@ test('can delete folder', function () {
 test('can rename folder', function () {
     $folder = \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => 'Old Name',
-        'path' => 'old-name'
+        'path' => 'old-name',
     ]);
 
     Livewire::test(FileManager::class)
@@ -73,14 +72,14 @@ test('can rename folder', function () {
 
     $this->assertDatabaseHas('folders', [
         'id' => $folder->id,
-        'name' => 'New Name'
+        'name' => 'New Name',
     ]);
 });
 
 test('can navigate between folders', function () {
     $folder = \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => 'Test Folder',
-        'path' => 'test-folder'
+        'path' => 'test-folder',
     ]);
 
     Livewire::test(FileManager::class)
@@ -107,13 +106,13 @@ test('validates file upload size', function () {
 test('can handle nested folders', function () {
     $parent = \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => 'Parent',
-        'path' => 'parent'
+        'path' => 'parent',
     ]);
 
     $child = \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => 'Child',
         'path' => 'parent/child',
-        'parent_id' => $parent->id
+        'parent_id' => $parent->id,
     ]);
 
     Livewire::test(FileManager::class)
@@ -128,7 +127,7 @@ test('can handle file preview', function () {
         'name' => 'test.jpg',
         'mime_type' => 'image/jpeg',
         'size' => 1000,
-        'path' => 'test.jpg'
+        'path' => 'test.jpg',
     ]);
 
     Livewire::test(FileManager::class)

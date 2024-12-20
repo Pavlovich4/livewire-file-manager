@@ -4,7 +4,8 @@ namespace Pavlovich4\LivewireFilemanager\Actions;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Pavlovich4\LivewireFilemanager\Models\{File, Folder};
+use Pavlovich4\LivewireFilemanager\Models\File;
+use Pavlovich4\LivewireFilemanager\Models\Folder;
 
 class UploadFileAction
 {
@@ -13,12 +14,12 @@ class UploadFileAction
         // Determine the physical path for the file
         $folderPath = $folder ? $folder->path : '';
         $fileName = $uploadedFile->getClientOriginalName();
-        $filePath = trim($folderPath . '/' . $fileName, '/');
+        $filePath = trim($folderPath.'/'.$fileName, '/');
 
         // Create the physical folder if it doesn't exist
         if ($folder) {
             $disk = Storage::disk(config('livewire-filemanager.disk', 'public'));
-            if (!$disk->exists($folder->path)) {
+            if (! $disk->exists($folder->path)) {
                 $disk->makeDirectory($folder->path);
             }
         }

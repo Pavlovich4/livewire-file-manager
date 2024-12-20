@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Str;
 
-
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -33,7 +32,7 @@ function createTestFile($name = 'test.jpg', $size = 1000)
         'name' => $name,
         'mime_type' => 'image/jpeg',
         'size' => $size,
-        'path' => $name
+        'path' => $name,
     ]);
 }
 
@@ -42,6 +41,6 @@ function createTestFolder($name = 'Test Folder', $parentId = null)
     return \Pavlovich4\LivewireFilemanager\Models\Folder::create([
         'name' => $name,
         'path' => Str::slug($name),
-        'parent_id' => $parentId
+        'parent_id' => $parentId,
     ]);
 }
