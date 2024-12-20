@@ -2,24 +2,23 @@
 
 namespace Pavlovich4\LivewireFilemanager\Models;
 
-use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Pavlovich4\LivewireFilemanager\Support\CustomPathGenerator;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class File extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia;
+    use InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',
         'folder_id',
         'mime_type',
         'size',
-        'path'
+        'path',
     ];
 
     protected static function boot()

@@ -2,36 +2,57 @@
 
 namespace Pavlovich4\LivewireFilemanager\Livewire;
 
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
-use Pavlovich4\LivewireFilemanager\Actions\UploadFileAction;
 use Pavlovich4\LivewireFilemanager\Actions\CreateFolderAction;
-use Pavlovich4\LivewireFilemanager\Models\{File, Folder};
+use Pavlovich4\LivewireFilemanager\Actions\UploadFileAction;
+use Pavlovich4\LivewireFilemanager\Models\File;
+use Pavlovich4\LivewireFilemanager\Models\Folder;
 
 class FileManager extends Component
 {
     use WithFileUploads;
 
     public $showModal = false;
+
     public $currentFolder = null;
+
     public $files = [];
+
     public $uploadedFiles = [];
+
     public $search = '';
+
     public $newFolderName = '';
+
     public $showNewFolderModal = false;
+
     public $isGrid = true;
+
     public $isUploading = false;
+
     public $expandedFolders = [];
+
     public $editingName = null;
+
     public $editingType = null;
+
     public $editingFileName = null;
+
     public $globalSearch = '';
+
     public $selectedFile = null;
+
     public $showFilePreview = false;
+
     public $showDeleteConfirmation = false;
+
     public $folderToDelete = null;
+
     public $showFileDeleteConfirmation = false;
+
     public $fileToDelete = null;
 
     protected $listeners = [
@@ -44,7 +65,20 @@ class FileManager extends Component
         $this->loadFiles();
     }
 
-    public function loadFiles()
+    #[On('upload:generatedSignedUrl')]
+    public function startSpinner(): void
+    {
+        $this->isUploading = true;
+    }
+
+    #[On('upload:finished')]
+    #[On('upload:error')]
+    public function stopSpinner(): void
+    {
+        $this->isUploading = false;
+    }
+
+    public function loadFiles(): void
     {
         $query = File::query()
             ->with('media')
@@ -60,62 +94,68 @@ class FileManager extends Component
         $this->files = $query->latest()->get();
     }
 
-    public function handleFileUpload($fileData = null)
+    public function handleFileUpload($fileData = null): void
     {
         $this->isUploading = true;
 
-        if ($fileData) {
-            // Handle drag and drop files
-            foreach ($fileData as $file) {
-                $this->uploadedFiles[] = $file;
+        try {
+            if ($fileData) {
+                // Handle drag and drop files
+                foreach ($fileData as $file) {
+                    $this->uploadedFiles[] = $file;
+                }
             }
-        }
 
-        if (empty($this->uploadedFiles)) {
+            if (empty($this->uploadedFiles)) {
+                $this->isUploading = false;
+
+                return;
+            }
+
+            $this->validate([
+                'uploadedFiles.*' => 'required|file|max:102400', // 100MB max
+            ]);
+
+            $folder = $this->currentFolder ? Folder::find($this->currentFolder) : null;
+
+            foreach ($this->uploadedFiles as $file) {
+                try {
+                    app(UploadFileAction::class)->execute($file, $folder);
+                } catch (\Exception $e) {
+                    \Log::error('Upload failed: '.$e->getMessage());
+                }
+            }
+
+            $this->uploadedFiles = [];
+            $this->loadFiles();
+        } catch (\Exception $e) {
+            \Log::error('Upload failed: '.$e->getMessage());
+        } finally {
             $this->isUploading = false;
-            return;
         }
-
-        $this->validate([
-            'uploadedFiles.*' => 'required|file|max:102400', // 100MB max
-        ]);
-
-        $folder = $this->currentFolder ? Folder::find($this->currentFolder) : null;
-
-        foreach ($this->uploadedFiles as $file) {
-            try {
-                app(UploadFileAction::class)->execute($file, $folder);
-            } catch (\Exception $e) {
-                \Log::error('Upload failed: ' . $e->getMessage());
-            }
-        }
-
-        $this->uploadedFiles = [];
-        $this->isUploading = false;
-        $this->loadFiles();
     }
 
-    public function updatedUploadedFiles()
+    public function updatedUploadedFiles(): void
     {
         $this->handleFileUpload();
     }
 
-    public function handleUploadProgress($filename, $progress)
+    public function handleUploadProgress($filename, $progress): void
     {
         if (isset($this->uploadProgress[$filename])) {
             $this->uploadProgress[$filename]['progress'] = $progress;
         }
     }
 
-    public function toggleView()
+    public function toggleView(): void
     {
-        $this->isGrid = !$this->isGrid;
+        $this->isGrid = ! $this->isGrid;
     }
 
-    public function createFolder()
+    public function createFolder(): void
     {
         $this->validate([
-            'newFolderName' => 'required|min:1|max:255'
+            'newFolderName' => 'required|min:1|max:255',
         ]);
 
         $parent = $this->currentFolder ? Folder::find($this->currentFolder) : null;
@@ -127,7 +167,7 @@ class FileManager extends Component
         $this->loadFiles();
     }
 
-    public function navigateToFolder($folderId = null)
+    public function navigateToFolder($folderId = null): void
     {
         $this->currentFolder = $folderId;
         $this->loadFiles();
@@ -183,6 +223,7 @@ class FileManager extends Component
     public function downloadFile($fileId)
     {
         $file = File::findOrFail($fileId);
+
         return response()->download($file->getFirstMediaPath());
     }
 
@@ -204,16 +245,17 @@ class FileManager extends Component
                     'id' => $folder->id,
                     'name' => $folder->name,
                     'filesCount' => $filesCount,
-                    'foldersCount' => $foldersCount
+                    'foldersCount' => $foldersCount,
                 ];
                 $this->showDeleteConfirmation = true;
+
                 return;
             }
 
             $folder->delete();
         } catch (\Exception $e) {
             dd($e->getMessage());
-            \Log::error('Error deleting folder: ' . $e->getMessage());
+            \Log::error('Error deleting folder: '.$e->getMessage());
         }
         $this->loadFiles();
     }
@@ -224,7 +266,7 @@ class FileManager extends Component
             $folder = Folder::findOrFail($this->folderToDelete['id']);
             $folder->delete();
         } catch (\Exception $e) {
-            \Log::error('Error deleting folder: ' . $e->getMessage());
+            \Log::error('Error deleting folder: '.$e->getMessage());
         }
 
         $this->showDeleteConfirmation = false;
@@ -248,18 +290,18 @@ class FileManager extends Component
     public function renameFolder($folderId)
     {
         $this->validate([
-            'newFolderName' => 'required|min:1|max:255'
+            'newFolderName' => 'required|min:1|max:255',
         ]);
 
         try {
             $folder = Folder::findOrFail($folderId);
             $oldPath = $folder->path;
-            $newPath = $folder->parent ? $folder->parent->full_path . '/' . $this->newFolderName : $this->newFolderName;
+            $newPath = $folder->parent ? $folder->parent->full_path.'/'.$this->newFolderName : $this->newFolderName;
 
             // Update folder name and path
             $folder->update([
                 'name' => $this->newFolderName,
-                'path' => $newPath
+                'path' => $newPath,
             ]);
 
             // Update physical folder name
@@ -350,7 +392,7 @@ class FileManager extends Component
             $this->showFilePreview = false;
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => 'File deleted successfully'
+                'message' => 'File deleted successfully',
             ]);
         }
     }

@@ -2,14 +2,14 @@
 
 namespace Pavlovich4\LivewireFilemanager\Tests;
 
+use Dotenv\Dotenv;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Pavlovich4\LivewireFilemanager\FileManagerServiceProvider;
-use Livewire\LivewireServiceProvider;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Dotenv\Dotenv;
 
 class TestCase extends Orchestra
 {
@@ -20,7 +20,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn(string $modelName) => 'Pavlovich4\\LivewireFilemanager\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Pavlovich4\\LivewireFilemanager\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         $this->setUpDatabase();
@@ -34,9 +34,9 @@ class TestCase extends Orchestra
 
     public function setUpDatabase()
     {
-        $mediaTableMigration = require __DIR__ . '/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub';
-        $folderTableMigration = require __DIR__ . '/../database/migrations/0001_01_01_000003_create_folders_table.php.stub';
-        $fileTableMigration = require __DIR__ . '/../database/migrations/0001_01_01_000004_create_files_table.php.stub';
+        $mediaTableMigration = require __DIR__.'/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub';
+        $folderTableMigration = require __DIR__.'/../database/migrations/0001_01_01_000003_create_folders_table.php.stub';
+        $fileTableMigration = require __DIR__.'/../database/migrations/0001_01_01_000004_create_files_table.php.stub';
 
         (new $mediaTableMigration)->up();
         (new $folderTableMigration)->up();
@@ -45,11 +45,11 @@ class TestCase extends Orchestra
 
     protected function loadEnvironmentVariables()
     {
-        if (! file_exists(__DIR__ . '/../.getenv')) {
+        if (! file_exists(__DIR__.'/../.getenv')) {
             return;
         }
 
-        $dotEnv = Dotenv::createImmutable(__DIR__ . '/..');
+        $dotEnv = Dotenv::createImmutable(__DIR__.'/..');
         $dotEnv->load();
     }
 
@@ -64,7 +64,7 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     protected function getEnvironmentSetUp($app)
