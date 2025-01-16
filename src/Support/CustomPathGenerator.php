@@ -12,16 +12,16 @@ class CustomPathGenerator implements PathGenerator
         $file = $media->model;
         $folder = $file->folder;
 
-        return $folder ? $folder->path . '/' . $file->id . '/' : $file->id . '/';
+        return $folder ? $folder->path.'/'.$file->id.'/' : $file->id.'/';
     }
 
     public function getPathForConversions(Media $media): string
     {
-        return $this->getPath($media) . '/conversions';
+        return $this->getPath($media).'/conversions';
     }
 
     public function getPathForResponsiveImages(Media $media): string
     {
-        return $this->getPath($media) . '/responsive';
+        return $this->getPath($media).'/responsive';
     }
 }

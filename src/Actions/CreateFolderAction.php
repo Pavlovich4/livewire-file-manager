@@ -12,12 +12,12 @@ class CreateFolderAction
         // Determine the folder path
         $path = $name;
         if ($parent) {
-            $path = trim($parent->path . '/' . $name, '/');
+            $path = trim($parent->path.'/'.$name, '/');
         }
 
         // Create the physical folder
         $disk = Storage::disk(config('livewire-filemanager.disk', 'public'));
-        if (!$disk->exists($path)) {
+        if (! $disk->exists($path)) {
             $disk->makeDirectory($path);
         }
 
